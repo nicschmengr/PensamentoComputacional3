@@ -1,0 +1,103 @@
+Eu desenvolvi uma simulação de um portão automático de duas partes no Tinkercad usando Arduino. Usei dois servos motores, onde um representa o lado esquerdo e o outro o lado direito do portão.
+. Também utilizei 4 botões para controlar a abertura e o fechamento e 6 LEDs para indicar o estado do sistema.
+O botão 1 abre apenas o lado esquerdo, o botão 2 abre apenas o lado direito, o botão 3 abre os dois lados ao mesmo tempo e o botão 4 fecha 
+completamente o portão.Os LEDs vermelhos indicam quando os lados estão fechados e os verdes mostram quando estão abertos. O LED amarelo acende quando o portão está em
+em movimento ou quando apenas um lado está aberto. Já o LED azul acende quando os dois lados estão totalmente abertos.
+No início, o sistema começa com os dois lados fechados e os LEDs vermelhos ligados. Quando algum botão é pressionado, os servos se movimentam de acordo com a ação escolhida e os LEDs mudam para mostrar o estado atual do portão.
+agora o codigo em texto:
+
+#include <Servo.h>
+
+Servo servo1;
+Servo servo2;
+
+// LEDs
+int ledVermelho1 = 7;
+int ledVerde1 = 6;
+int ledVermelho2 = 5;
+int ledVerde2 = 4;
+int ledAmarelo = 3;
+int ledAzul = 2;
+
+// Botões
+int botaoAbrir = 10;
+int botaoEmergencia = 11;
+int botaoFechar = 12;
+int botaoReset = 13;
+
+void setup()
+{
+  // LEDs como saída
+  pinMode(ledVermelho1, OUTPUT);
+  pinMode(ledVerde1, OUTPUT);
+  pinMode(ledVermelho2, OUTPUT);
+  pinMode(ledVerde2, OUTPUT);
+  pinMode(ledAmarelo, OUTPUT);
+  pinMode(ledAzul, OUTPUT);
+
+  // Botões como entrada
+  pinMode(botaoAbrir, INPUT);
+  pinMode(botaoEmergencia, INPUT);
+  pinMode(botaoFechar, INPUT);
+  pinMode(botaoReset, INPUT);
+
+  // Servos
+  servo1.attach(8);
+  servo2.attach(9);
+
+  // Estado inicial
+  servo1.write(0);
+  servo2.write(0);
+
+  digitalWrite(ledVermelho1, HIGH);
+  digitalWrite(ledVermelho2, HIGH);
+  digitalWrite(ledVerde1, LOW);
+  digitalWrite(ledVerde2, LOW);
+  digitalWrite(ledAmarelo, LOW);
+  digitalWrite(ledAzul, LOW);
+}
+
+void loop()
+{
+  // Botão abrir portão
+  if (digitalRead(botaoAbrir) == HIGH)
+  {
+    servo1.write(90);
+    servo2.write(90);
+
+    digitalWrite(ledVerde1, HIGH);
+    digitalWrite(ledVerde2, HIGH);
+    digitalWrite(ledVermelho1, LOW);
+    digitalWrite(ledVermelho2, LOW);
+    digitalWrite(ledAzul, HIGH);
+  }
+
+  // Botão fechar portão
+  if (digitalRead(botaoFechar) == HIGH)
+  {
+    servo1.write(0);
+    servo2.write(0);
+
+    digitalWrite(ledVermelho1, HIGH);
+    digitalWrite(ledVermelho2, HIGH);
+    digitalWrite(ledVerde1, LOW);
+    digitalWrite(ledVerde2, LOW);
+    digitalWrite(ledAzul, LOW);
+  }
+
+  // Botão emergência
+  if (digitalRead(botaoEmergencia) == HIGH)
+  {
+    digitalWrite(ledAmarelo, HIGH);
+
+    servo1.write(0);
+    servo2.write(0);
+  }
+
+  // Botão reset
+  if (digitalRead(botaoReset) == HIGH)
+  {
+    digitalWrite(ledAmarelo, LOW);
+    digitalWrite(ledAzul, LOW);
+  }
+}
